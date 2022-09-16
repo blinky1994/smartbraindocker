@@ -43,18 +43,6 @@ services:
     ports:
       - "6379:6379"
 
-  #Nginx
-  nginx:
-    depends_on:
-      - smart-brain-api
-      - smart-brain
-    restart: always
-    build:
-      dockerfile: Dockerfile
-      context: ./nginx
-    ports:
-      - "3050:80"
-
 
    
     
