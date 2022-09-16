@@ -1,0 +1,62 @@
+version: '3.6'
+
+services:
+
+  #Frontend
+  smart-brain:
+    container_name: frontend
+    build: ./smartbrain
+    command: npm start
+    working_dir: /usr/src/smart-brain
+    ports:
+      - "3000:3000"
+
+  #Backend API
+  smart-brain-api:
+    container_name: backend
+    build: ./smartbrain-api
+    command: npm start
+    working_dir: /usr/src/smart-brain-api
+    environment:
+      POSTGRES_URI: postgres://lala:lala@postgres:5432/smart-brain-docker
+      REDIS_URI: redis://redis:6379
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./:/usr/src/smart-brain-api
+
+  #Postgres
+  postgres:
+    container_name: postgres
+    build: ./smartbrain-api/postgres 
+    environment:
+      POSTGRES_USER: lala
+      POSTGRES_PASSWORD: lala
+      POSTGRES_DB: smart-brain-docker
+      POSTGRES_HOST: postgres
+    ports:
+      - "5432:5432"
+
+  #Redis
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  #Nginx
+  nginx:
+    depends_on:
+      - smart-brain-api
+      - smart-brain
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3050:80"
+
+
+   
+    
+
+
